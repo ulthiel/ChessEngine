@@ -12,3 +12,14 @@ This is a Universal Chess Interface engine and uses the [lichess-bot bridge](htt
 ## Requirements:
 1. [python-chess](https://github.com/niklasf/python-chess) for board representation
 2. [lichess-bot](https://github.com/careless25/lichess-bot) if you want it to play as a bot on lichess
+
+## Fixes by UT
+The following command sequence did not work:
+```
+uci
+ucinewgame
+position startpos
+position startpos moves g2g4 e7e5
+```
+
+But this sequence is sent when using Polyglot. I've implemented a simple fix.

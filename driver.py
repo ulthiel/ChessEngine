@@ -149,7 +149,7 @@ def negamax(board: chess.Board, depth: int, alpha: int, beta: int):
 
 def simpleCommand(operation: str):
     if operation == "uci":
-        print("id name ChessEngine")
+        print("id name ChessEngine (UT fix)")
         print("id author Alain Lou")
         print("uciok")
     elif operation == "isready":
@@ -161,8 +161,18 @@ def handleCommand(operation: str, parameters: [str]):
 
     if operation == "position" and "startpos" in parameters: #set the position of the internal board
         parameters = parameters.split()
-        if parameters[-1] != "startpos":
-            board.push_uci(parameters[-1])
+        #UT: need to fix position setup, the following crashes (but will
+        #be submitted when using polyglot):
+        #>ucinewgame
+        #>position startpos
+        #>position startpos moves g2g4 e7e5
+        #We will thus reset the board and pass push the whole move sequence
+        #in again.
+        board.reset()
+        for p in parameters:
+            if p == "startpos" or p == "moves":
+                continue
+            board.push_uci(p)
 
     elif operation == "go":
         toMove: chess.Move = findMove(board)
@@ -175,7 +185,7 @@ while True:
     if line == "quit":
         break
     elif not " " in line:
-        simpleCommand(line)        
+        simpleCommand(line)
     else:
         flag = line.index(" ")
         handleCommand(line[:flag], line[flag+1:])
