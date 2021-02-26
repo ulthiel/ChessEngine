@@ -128,6 +128,7 @@ def findMove(board: chess.Board) -> chess.Move:
         board.pop()
     #UT: if there's a mate, there won't be a best move with this search,
     #bestMove will be None.
+    #E.g. position startpos moves e2e4 c7c5 g1f3 g8f6 e4e5 f6d5 d2d4 b8c6 d4c5 a8b8 f3g5 b7b5 d1d5 e7e6 d5e4 d8g5 c1g5 f8e7 g5e7 c6d8 e7d8 d7d5 e4h4 e8d7 f1b5 b8b5 h4e7
     #In this case, we'll simply return the first legal move.
     if bestMove != None:
         return bestMove
