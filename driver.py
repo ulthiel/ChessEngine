@@ -126,7 +126,13 @@ def findMove(board: chess.Board) -> chess.Move:
             bestEval = currEval
             bestMove = move
         board.pop()
-    return bestMove
+    #UT: if there's a mate, there won't be a best move with this search,
+    #bestMove will be None.
+    #In this case, we'll simply return the first legal move.
+    if bestMove != None:
+        return bestMove
+    else:
+        return list(board.legal_moves)[0]
 
 # find the value of a position through negamax search at a given depth
 def negamax(board: chess.Board, depth: int, alpha: int, beta: int):
