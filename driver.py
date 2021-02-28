@@ -166,20 +166,28 @@ def handleCommand(operation: str, parameters: [str]):
     # TODO handle when they give FEN notation
     global board
 
-    if operation == "position" and "startpos" in parameters: #set the position of the internal board
-        parameters = parameters.split()
-        #UT: need to fix position setup, the following crashes (but will
-        #be submitted when using polyglot):
-        #>ucinewgame
-        #>position startpos
-        #>position startpos moves g2g4 e7e5
-        #We will thus reset the board and pass push the whole move sequence
-        #in again.
-        board.reset()
-        for p in parameters:
-            if p == "startpos" or p == "moves":
-                continue
-            board.push_uci(p)
+    if operation == "position":
+        if "startpos" in parameters: #set the position of the internal board
+            parameters = parameters.split()
+            #UT: need to fix position setup, the following crashes (but will
+            #be submitted when using polyglot):
+            #>ucinewgame
+            #>position startpos
+            #>position startpos moves g2g4 e7e5
+            #We will thus reset the board and pass push the whole move sequence
+            #in again.
+            board.reset()
+            for p in parameters:
+                if p == "startpos" or p == "moves":
+                    continue
+                board.push_uci(p)
+
+        #UT: Added quick hack for setting position from fen.
+        elif "fen" in parameters:
+            fen = parameters.replace("position", "")
+            fen = parameters.replace("fen", "")
+            board.reset()
+            board.set_fen(fen)
 
     elif operation == "go":
         toMove: chess.Move = findMove(board)
