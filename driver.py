@@ -121,37 +121,32 @@ def findMove(board: chess.Board) -> chess.Move:
     bestMove: chess.Move = None
     for move in board.legal_moves:
         board.push(move)
-        currEval = negamax(board, 3, -10000, 10000)
+        currEval = -negamax(board, 3, -10000, 10000) #UT: needed a - here
         if(currEval > bestEval):
             bestEval = currEval
             bestMove = move
         board.pop()
-    #UT: if there's a mate, there won't be a best move with this search,
-    #bestMove will be None.
-    #E.g. position startpos moves e2e4 c7c5 g1f3 g8f6 e4e5 f6d5 d2d4 b8c6 d4c5 a8b8 f3g5 b7b5 d1d5 e7e6 d5e4 d8g5 c1g5 f8e7 g5e7 c6d8 e7d8 d7d5 e4h4 e8d7 f1b5 b8b5 h4e7
-    #In this case, we'll simply return the first legal move.
-    if bestMove != None:
-        return bestMove
-    else:
-        return list(board.legal_moves)[0]
+    print("info score cp "+str(bestEval)) #UT: added this
+    return bestMove
 
 # find the value of a position through negamax search at a given depth
 def negamax(board: chess.Board, depth: int, alpha: int, beta: int):
     bestEval = -999999999
-    if depth == 0:
+    #UT: fixed mistake here. We also need to return board evaluation if
+    #board is a terminal node (no more legal moves). Otherwise, -999999999
+    #is returned on terminal node and search function will return None as
+    #bestMove.
+    if depth == 0 or len(list(board.legal_moves)) == 0:
         return eval(board) if board.turn else -eval(board)
+
+    #UT: replaced negamax code by the following standard version
     for move in board.legal_moves:
         board.push(move)
-        bestEval = -negamax(board, depth - 1, alpha, beta) if board.turn else negamax(board, depth - 1, alpha, beta)
+        bestEval = max(bestEval, -negamax(board, depth - 1, -beta, -alpha))
+        alpha = max(alpha, bestEval)
         board.pop()
-        if(not board.turn):
-            alpha = max(alpha, bestEval)
-            if(beta <= alpha):
-                return bestEval
-        else:
-            beta = min(beta, bestEval)
-            if(beta <= alpha):
-                return bestEval
+        if alpha >= beta:
+            break
     return bestEval
 
 def simpleCommand(operation: str):

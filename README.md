@@ -14,12 +14,12 @@ This is a Universal Chess Interface engine and uses the [lichess-bot bridge](htt
 2. [lichess-bot](https://github.com/careless25/lichess-bot) if you want it to play as a bot on lichess
 
 ## Fixes by UT
-The following command sequence did not work:
+1. Fixed the negamax and the search function (engine was maxizing damage before...).
+2. Fixed parsing of ```position startpos``` command. E.g. the following command sequence did not work (but is sent for example when using an opening book for the first few moves):
 ```
 uci
 ucinewgame
 position startpos
 position startpos moves g2g4 e7e5
 ```
-
-But this sequence is sent when using Polyglot. I've implemented a simple fix.
+3. Added functionality for ```position fen``` command.
